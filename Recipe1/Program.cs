@@ -6,7 +6,7 @@
         static void Main(string[] args)
         {
             Callhere.Intro();
-            Callhere.Input();
+           
             
         }
     }

@@ -38,18 +38,18 @@ namespace Recipe1
         public void Intro() 
         {
             Console.WriteLine("********WELCOME TO RECIPE MANIA********");
-
+            Input();
         }
 
         public void Input()
         {
-            Console.WriteLine("ENTER THE NAME OF THE PRODUCT YOU WANTING TO MAKE:");
+            Console.WriteLine("ENTER THE NAME OF THE PRODUCT YOU WANTING TO MAKE:");//prompts the user for product name
             ProdName = Console.ReadLine();
 
-            Console.Write("Number of ingredients: ");
+            Console.Write("Number of ingredients: ");//prompts user for number of ingredients
             NumIngred = Console.ReadLine();
             int numIngredients;
-            while (!int.TryParse(NumIngred, out numIngredients))
+            while (!int.TryParse(NumIngred, out numIngredients))//if something else besides integer is entered
             {
                 Console.WriteLine("Invalid input. Please enter a valid integer.");
                 Console.Write("Number of ingredients: ");
@@ -187,7 +187,7 @@ namespace Recipe1
             if (Option1 != 1 && Option1 != 2 ||Option1>2)//if an integer is entered besides 1,2 or greater than 2
             {
                 Console.WriteLine(" INVALID INPUT!");
-               OptionReport();//goes back to original report
+               OptionReport();//goes back to Options
             }
 
             if (Option1 == 1)
