@@ -13,9 +13,11 @@ namespace Recipe1
     {
         public string NumIngred { get; set; }
         public string ProdName { get; set; }
+        public string Option { get; set; }
         public string[] Name { get; set; }
         public double[] Quantity { get; set; }
         public string[] Unit { get; set; }
+        
 
         //Declare arrays in class 
         private string[] ingredients;
@@ -111,12 +113,52 @@ namespace Recipe1
             }
 
             //displays all the neccessary steps after each ingredient
-            Console.WriteLine("\n*****Steps*****");//iterates through for loop displaying the steps
+            Console.WriteLine("\n*****Steps*****");//itterates through for loop displaying the steps
             for (int i = 0; i < steps.Length; i++)
             {
                 Console.WriteLine($"{i + 1}. {steps[i]}");
             }
 
+        }
+
+        public void OptionReport ()
+        {
+            Console.WriteLine("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA\n3)QUIT");
+            Option = Console.ReadLine();
+            int Option1;
+            while (!int.TryParse(Option, out Option1))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
+                Console.Write("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA\n3)QUIT");
+                Option = Console.ReadLine();
+            }
+            if (Option1 != 1 && Option1 != 2 && Option1 != 3)
+            {
+                OptionReport();
+            }
+
+            if (Option1==1) 
+            {
+                ScaleReport();
+            }
+           else if (Option1 == 2) 
+            {
+                ClearData();
+            }
+            else 
+            {
+                System.Environment.Exit(0);
+            }
+        }
+
+        public void ScaleReport() 
+        {
+        
+        }
+
+        public void ClearData() 
+        {
+        
         }
            
 
