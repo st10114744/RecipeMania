@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -14,14 +15,14 @@ namespace Recipe1
         public string NumIngred { get; set; }
         public string ProdName { get; set; }
         public string Option { get; set; }
+
+
+        //Declare arrays in class
         public string[] Name { get; set; }
         public double[] Quantity { get; set; }
         public string[] Unit { get; set; }
         
-
-        //Declare arrays in class 
-        private string[] ingredients;
-        private string[] steps;
+        private string[] steps { get; set; }
 
 
 
@@ -118,47 +119,70 @@ namespace Recipe1
             {
                 Console.WriteLine($"{i + 1}. {steps[i]}");
             }
-
+            OptionReport();
         }
 
         public void OptionReport ()
         {
-            Console.WriteLine("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA\n3)QUIT");
+            Console.WriteLine("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA\n3)QUIT");//ask user which option they would prefer
             Option = Console.ReadLine();
             int Option1;
-            while (!int.TryParse(Option, out Option1))
+            while (!int.TryParse(Option, out Option1))//if the incorrect number is entered
             {
                 Console.WriteLine("Invalid input. Please enter a valid integer.");
                 Console.Write("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA\n3)QUIT");
                 Option = Console.ReadLine();
             }
-            if (Option1 != 1 && Option1 != 2 && Option1 != 3)
+            if (Option1 != 1 && Option1 != 2 && Option1 != 3)//if an integer is entered besides 1,2,3
             {
+                Console.WriteLine(" INVALID INPUT!");
                 OptionReport();
             }
 
             if (Option1==1) 
             {
-                ScaleReport();
+                ScaleReport();//goes to scale data report
             }
            else if (Option1 == 2) 
             {
-                ClearData();
+                ClearData();//goes to clear data method
             }
-            else 
+            else if(Option1 == 3)
             {
-                System.Environment.Exit(0);
+                System.Environment.Exit(0);//exits program
             }
         }
 
         public void ScaleReport() 
         {
-        
-        }
+            Console.Write("Scale quantities by: ");//input the amount you want to scale by
+            string scaleInput = Console.ReadLine();
+            double scale;
+            while (!double.TryParse(scaleInput, out scale))//invalid integer
+            {
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
+                Console.Write("Scale quantities by: ");
+                scaleInput = Console.ReadLine();
+            }
+            Console.WriteLine("\n\n*****SCALED REPORT*****");
+            for (int i = 0; i < Quantity.Length; i++)//itterates through quantities and scales them according to the number
+            {
+                double scaledQuantity = Quantity[i] * scale;
+                Console.WriteLine($"{Name[i]} : {scaledQuantity} {Unit[i]}");
+            }
+            
+
+         }
 
         public void ClearData() 
         {
-        
+            //clears Arrays
+            Array.Clear(Name, 0, Name.Length);
+            Array.Clear(Unit, 0, Unit.Length);
+            Array.Clear(Quantity, 0, Quantity.Length);
+            Array.Clear(steps, 0, steps.Length);
+
+
         }
            
 
