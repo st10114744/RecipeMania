@@ -19,8 +19,9 @@ namespace Recipe1
 
         //Declare arrays in class 
         private string[] ingredients;
+        private string[] steps;
 
-        
+
 
         public Class1() 
         {
@@ -72,15 +73,31 @@ namespace Recipe1
                     input = Console.ReadLine();
                 }
 
-                Quantity[i] = quantity;
+                Quantity[i] = quantity;//sends quantity input to array
 
 
                 Console.Write("Unit of Measurement: ");//input unit of measurement
                 string unit = Console.ReadLine();
-                Unit[i] = unit;
+                Unit[i] = unit;//sends unit to array
             }
+
         }
 
+        public void IngredientSteps()
+        {
+            Console.Write("Enter the number of steps: ");//prompting user to enter the number of steps for recipe
+            int numSteps = int.Parse(Console.ReadLine());
+
+            steps = new string[numSteps];// initialisng array
+
+            // Prompt the user to enter the description for each step
+            for (int i = 0; i < numSteps; i++)
+            {
+                Console.Write($"Enter the description for step #{i + 1}: ");//autogenerates step number according to number of steps
+                steps[i] = Console.ReadLine();//sends descriptions to array
+            }
+
+        }
            
 
 
