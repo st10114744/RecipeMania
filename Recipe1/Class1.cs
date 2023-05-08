@@ -12,6 +12,10 @@ namespace Recipe1
 {
     internal class Class1
     {
+        string numingred;
+        string prodName;
+        string option;
+
         public string NumIngred { get; set; }
         public string ProdName { get; set; }
         public string Option { get; set; }
@@ -171,10 +175,33 @@ namespace Recipe1
                 Console.WriteLine($"{Name[i]} : {scaledQuantity} {Unit[i]}");
             }
             
+            Console.WriteLine(" Do you wish to go back to original values?\n1)yes\n2)no");
+            Option = Console.ReadLine();
+            int Option1;
+            while (!int.TryParse(Option, out Option1))//if the incorrect number is entered
+            {
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
+                Console.Write("Do you wish to go back to original values?\n1)yes\n2)no");
+                Option = Console.ReadLine();
+            }
+            if (Option1 != 1 && Option1 != 2 ||Option1>2)//if an integer is entered besides 1,2 or greater than 2
+            {
+                Console.WriteLine(" INVALID INPUT!");
+               OptionReport();//goes back to original report
+            }
 
+            if (Option1 == 1)
+            {
+                displayReport();//goes back to original report
+            }
+            else if (Option1 == 2)
+            {
+                System.Environment.Exit(0);//exits
+            }
+           
          }
 
-        public void ClearData() 
+        public void ClearData() //clear all arrays and start from begginning
         {
             //clears Arrays
             Array.Clear(Name, 0, Name.Length);
@@ -182,7 +209,7 @@ namespace Recipe1
             Array.Clear(Quantity, 0, Quantity.Length);
             Array.Clear(steps, 0, steps.Length);
 
-
+            Input();
         }
            
 
