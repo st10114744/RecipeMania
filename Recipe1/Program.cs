@@ -7,7 +7,7 @@
         {
             Callhere.Intro();
             Callhere.Input();
-            Callhere.GenerateReport();
+            
         }
     }
 }

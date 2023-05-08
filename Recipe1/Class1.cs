@@ -80,7 +80,7 @@ namespace Recipe1
                 string unit = Console.ReadLine();
                 Unit[i] = unit;//sends unit to array
             }
-
+            IngredientSteps();
         }
 
         public void IngredientSteps()
@@ -95,6 +95,26 @@ namespace Recipe1
             {
                 Console.Write($"Enter the description for step #{i + 1}: ");//autogenerates step number according to number of steps
                 steps[i] = Console.ReadLine();//sends descriptions to array
+            }
+            displayReport();
+        }
+
+        public void displayReport() 
+        {
+            
+            Console.WriteLine($"\n\n\n*****{ProdName.ToUpper()} INGREDIENTS*****");//Recipe name 
+
+            //displays ingredients via iterating through for loop
+            for (int i = 0; i < Name.Length; i++)
+            {
+                Console.WriteLine($"{Name[i]} : {Quantity[i]} {Unit[i]}");//concatinates all details in arrays into one string for each ingredient
+            }
+
+            //displays all the neccessary steps after each ingredient
+            Console.WriteLine("\n*****Steps*****");//iterates through for loop displaying the steps
+            for (int i = 0; i < steps.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {steps[i]}");
             }
 
         }
