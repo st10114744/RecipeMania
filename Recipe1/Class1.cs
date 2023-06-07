@@ -7,6 +7,11 @@ namespace Recipe1
 {
     internal class Class1
     {
+
+       
+        public delegate void RecipeCaloriesExceededEventHandler(string recipeName);
+        public event RecipeCaloriesExceededEventHandler RecipeCaloriesExceeded;
+
         // Declare variables
         private List<string> prodNames;
         private List<List<string>> names;
@@ -148,7 +153,7 @@ namespace Recipe1
                     }
                     ingredientCalories.Add(calories);
 
-                    Console.WriteLine("Food Group Options:");
+                    Console.WriteLine("\nFood Group Options:");
                     Console.WriteLine("1. Starchy foods");
                     Console.WriteLine("2. Vegetables and fruits");
                     Console.WriteLine("3. Dry beans, peas, lentils, and soya");
@@ -157,12 +162,12 @@ namespace Recipe1
                     Console.WriteLine("6. Fats and oil");
                     Console.WriteLine("7. Water");
 
-                    Console.Write("Food Group (enter the corresponding number): ");
+                    Console.Write("\nFood Group (enter the corresponding number): ");
                     string foodGroupInput = Console.ReadLine();
                     int foodGroupOption;
                     while (!int.TryParse(foodGroupInput, out foodGroupOption) || foodGroupOption < 1 || foodGroupOption > 7)
                     {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
+                        Console.WriteLine("/Invalid input. Please enter a valid number.");
                         Console.Write("Food Group (enter the corresponding number): ");
                         foodGroupInput = Console.ReadLine();
                     }
@@ -221,14 +226,14 @@ namespace Recipe1
         // Method for steps with ingredients
         public void IngredientSteps()
         {
-            Console.Write("Enter the number of steps: ");
+            Console.Write("\n\nEnter the number of steps: ");
             int numSteps = int.Parse(Console.ReadLine());
 
             List<string> recipeSteps = new List<string>();
 
             for (int i = 0; i < numSteps; i++)
             {
-                Console.Write($"Enter the description for step #{i + 1}: ");
+                Console.Write($"\nEnter the description for step #{i + 1}: ");
                 string step = Console.ReadLine();
                 recipeSteps.Add(step);
             }
@@ -238,37 +243,55 @@ namespace Recipe1
             DisplayReport();
         }
 
-        // Method for displaying the report with ingredients and steps
+        // 
+        protected virtual void OnRecipeCaloriesExceeded(string recipeName)
+        {
+            RecipeCaloriesExceeded?.Invoke(recipeName);
+        }
+
+        // DisplayReport method
         public void DisplayReport()
         {
             int recipeIndex = prodNames.Count - 1;
-            Console.WriteLine($"\n\n\n*****{prodNames[recipeIndex].ToUpper()} INGREDIENTS*****");
+
+            Console.WriteLine($"\n\n\n*****{prodNames[recipeIndex].ToUpper()} RECIPE REPORT*****");
+            Console.WriteLine($"\n\n\n*****{prodNames[recipeIndex].ToUpper()} Ingredients*****");
 
             for (int i = 0; i < names[recipeIndex].Count; i++)
             {
                 Console.WriteLine($"{names[recipeIndex][i]} : {quantities[recipeIndex][i]} {units[recipeIndex][i]}");
             }
 
-            Console.WriteLine("\n*****Steps*****");
+            Console.WriteLine("\n*****Recipe Steps*****");
             for (int i = 0; i < steps[recipeIndex].Count; i++)
             {
                 Console.WriteLine($"{i + 1}. {steps[recipeIndex][i]}");
             }
 
+            double totalCalories = calories[recipeIndex].Sum();
+            Console.WriteLine("\n*****Calories*****");
+            Console.WriteLine($"\nTotal Calories: {totalCalories}");
+
+            // Check if calories exceed 300 and invoke the event
+            if (totalCalories > 300)
+            {
+                OnRecipeCaloriesExceeded(prodNames[recipeIndex]);
+            }
+
             OptionReport();
         }
 
-        
+
         // Report displaying options
         public void OptionReport()
         {
-            Console.WriteLine("\nWOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) QUIT");
+            Console.WriteLine("\nWOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) NEW RECIPE\n5) QUIT");
             string option = Console.ReadLine();
             int option1;
             while (!int.TryParse(option, out option1))
             {
                 Console.WriteLine("Invalid input. Please enter a valid integer.");
-                Console.Write("WOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) QUIT");
+                Console.Write("WOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) NEW RECIPE\n5) QUIT");
                 option = Console.ReadLine();
             }
 
@@ -292,6 +315,9 @@ namespace Recipe1
                     }
                     break;
                 case 4:
+                    Input();
+                    break;
+                case 5:
                     Environment.Exit(0);
                     break;
                 default:
@@ -300,6 +326,7 @@ namespace Recipe1
                     break;
             }
         }
+
 
         // Report showing the new scaled results
         public void ScaleReport()
@@ -413,11 +440,18 @@ namespace Recipe1
                     Console.WriteLine($"{i + 1}. {steps[recipeIndex][i]}");
                 }
 
+                double totalCalories = calories[recipeIndex].Sum();
+                if (totalCalories > 300)
+                {
+                    OnRecipeCaloriesExceeded(prodNames[recipeIndex]);
+                }
+
                 OptionReport();
             }
         }
 
         
-        
+
+
     }
 }
