@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace Recipe1
 {
+    // Delegate to handle recipe calories exceeded event
+    public delegate void RecipeCaloriesExceededEventHandler(string recipeName);
     public class Class1
     {
-
-       
-        public delegate void RecipeCaloriesExceededEventHandler(string recipeName);
+        // Event to be raised when recipe calories are exceeded
         public event RecipeCaloriesExceededEventHandler RecipeCaloriesExceeded;
 
         // Declare variables
@@ -46,6 +46,8 @@ namespace Recipe1
             while (true)
             {
                 Console.WriteLine("\nMENU:");
+
+                // Display menu options
                 Console.WriteLine("1) New Recipe");
                 Console.WriteLine("2) View Recipes");
                 Console.WriteLine("3) Quit");
@@ -56,22 +58,22 @@ namespace Recipe1
                 switch (choice)
                 {
                     case "1":
-                        Input();
+                        Input(); // Call the Input() method to create a new recipe
                         break;
                     case "2":
                         if (prodNames.Count == 0)
                         {
                             Console.WriteLine("There are no recipes. Please create a new recipe.");
-                            Input();
+                            Input(); // If there are no recipes, prompt the user to create a new recipe
                         }
                         else
                         {
-                            ViewRecipes();
+                            ViewRecipes(); // Call the ViewRecipes() method to display the existing recipes
                         }
                         break;
                     case "3":
                         Console.WriteLine("Goodbye!");
-                        Environment.Exit(0);
+                        Environment.Exit(0); // Exit the application
                         break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -79,6 +81,7 @@ namespace Recipe1
                 }
             }
         }
+
         public void Input()
         {
             try
@@ -274,14 +277,21 @@ namespace Recipe1
                 Console.WriteLine($"{i + 1}. {steps[recipeIndex][i]}");
             }
 
+            Console.WriteLine("\n*****FoodGroup*****");
+            for (int i = 0; i < foodGroups[recipeIndex].Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {foodGroups[recipeIndex][i]}\n");
+            }
+
+
             // Calculate total calories
             List<double> ingredientCalories = calories[recipeIndex];
             double totalCalories = CalculateTotalCalories(ingredientCalories);
 
             // Display total calories
-            Console.WriteLine($"\n----------------Total Calories: {totalCalories}\n----------------");
+            Console.WriteLine($"\n------------------\nTotal Calories: {totalCalories}\n------------------");
 
-            Console.WriteLine("\n\n***SCALABLE CALORIE INTAKE***\"100-300: Good\n300-500: Decent\n500-700: Moderate\n700-900: High\n900-1000: Very high");
+            Console.WriteLine("\n\n***SCALABLE CALORIE INTAKE***\n100-300: Good\n300-500: Decent\n500-700: Moderate\n700-900: High\n900-1000: Very high\n\n");
 
 
             // Check if calories exceed 300 and call the event
@@ -290,10 +300,11 @@ namespace Recipe1
                 Console.Beep();
                 OnRecipeCaloriesExceeded(prodNames[recipeIndex]);
                 Console.WriteLine("\n\nA meal with more than 300 calories often has a larger caloric content. This could indicate a" +
-                                  "\n meal that is heavier or more filling. When consuming meals with higher calorie counts, it's crucial to pay attention to portion " +
-                                  "\nsizes and the overall balance of nutrients. It's best to make sure the meal contains" +
-                                  "\n a range of nutrient-rich foods to suit your nutritional needs. A well-rounded and balanced diet" +
-                                  "\n can be maintained by watching portion sizes and including a variety of vegetables, lean proteins, whole grains, and healthy fats.\n\n");
+                                  "\n meal that is heavier or more filling. When consuming meals with higher calorie counts, it's " +
+                                  "\ncrucial to pay attention to portion sizes and the overall balance of nutrients. It's best to make " +
+                                  "\nsure the meal contains a range of nutrient-rich foods to suit your nutritional needs. A well-rounded" +
+                                  "\nand balanced diet can be maintained by watching portion sizes and including a variety of " +
+                                  "\nvegetables, lean proteins, whole grains, and healthy fats.\n\n");
 
 
             }
@@ -466,6 +477,12 @@ namespace Recipe1
                 for (int i = 0; i < steps[recipeIndex].Count; i++)
                 {
                     Console.WriteLine($"{i + 1}. {steps[recipeIndex][i]}");
+                }
+
+                Console.WriteLine("\n*****FoodGroup*****");
+                for (int i = 0; i < foodGroups[recipeIndex].Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {foodGroups[recipeIndex][i]}\n");
                 }
 
                 double totalCalories = calories[recipeIndex].Sum();
