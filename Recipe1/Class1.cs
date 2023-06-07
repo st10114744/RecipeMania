@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +13,12 @@ namespace Recipe1
 {
     internal class Class1
     {
+        //declare variables
         string numingred;
         string prodName;
         string option;
 
+        //get and sets
         public string NumIngred { get; set; }
         public string ProdName { get; set; }
         public string Option { get; set; }
@@ -28,18 +31,25 @@ namespace Recipe1
         
         private string[] steps { get; set; }
 
+        private string[] FoodGroup { get; set; }
+        private double[] Calories { get; set; } 
 
 
+
+        //default constructor
         public Class1() 
         {
         
         }
-
+       // ******************************************************************************************************************************
+        //welcome method
         public void Intro() 
         {
             Console.WriteLine("********WELCOME TO RECIPE MANIA********");
             Input();
         }
+
+        //*******************************************************************************************************************************
 
         public void Input()
         {
@@ -60,36 +70,63 @@ namespace Recipe1
             Name = new string[numIngredients];
             Quantity = new double[numIngredients];
             Unit = new string[numIngredients];
+            Calories= new double[numIngredients];
+            FoodGroup = new string[numIngredients];
+
+            // Initialize the arrays here
+            Name = new string[numIngredients];
+            Quantity = new double[numIngredients];
+            Unit = new string[numIngredients];
+            Calories = new double[numIngredients];
+            FoodGroup = new string[numIngredients];
 
             // Ask the user to enter the details for each ingredient
-            for (int i = 0; i < numIngredients; i++)// allows us to loop through each ingredient
+            for (int i = 0; i < numIngredients; i++) // allows us to loop through each ingredient
             {
-                Console.WriteLine($"Enter the details for ingredient #{i + 1}:");//enter details and auto generates ingredient number based on number of ingredients
-                Console.Write("Name: ");//enter ingredient name
+                Console.WriteLine($"Enter the details for ingredient #{i + 1}:"); // enter details and auto generates ingredient number based on number of ingredients
+                Console.Write("Name: "); // enter ingredient name
                 string name = Console.ReadLine();
-                Name[i] = name;// sends the name to array
+                Name[i] = name; // sends the name to array
 
-                Console.Write("Quantity: ");//quantity of ingredient
+                Console.Write("Quantity: "); // quantity of ingredient
                 string input = Console.ReadLine();
                 double quantity;
 
-                while (!double.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out quantity))// allows there to be a white space before or after input and allows "," or "." as a decimal point.
+                while (!double.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out quantity)) // allows there to be a white space before or after input and allows "," or "." as a decimal point.
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid number.");//prompts user to enter again if input is incorrect
+                    Console.WriteLine("Invalid input. Please enter a valid number."); // prompts user to enter again if input is incorrect
                     Console.Write("Quantity: ");
                     input = Console.ReadLine();
                 }
 
-                Quantity[i] = quantity;//sends quantity input to array
+                Quantity[i] = quantity; // sends quantity input to array
 
-
-                Console.Write("Unit of Measurement: ");//input unit of measurement
+                Console.Write("Unit of Measurement: "); // input unit of measurements
                 string unit = Console.ReadLine();
-                Unit[i] = unit;//sends unit to array
+                Unit[i] = unit; // sends unit to array
+
+                Console.Write("Calories: "); // input calories of ingredient
+                string caloriesInput = Console.ReadLine();
+                double calories;
+
+                while (!double.TryParse(caloriesInput, NumberStyles.Number, CultureInfo.InvariantCulture, out calories)) // allows there to be a white space before or after input and allows "," or "." as a decimal point.
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid number."); // prompts user to enter again if input is incorrect
+                    Console.Write("Calories: ");
+                    caloriesInput = Console.ReadLine();
+                }
+
+                Calories[i] = calories; // sends calories input to array
+
+                Console.Write("Food Group: "); // input food group of ingredient
+                string foodGroup = Console.ReadLine();
+                FoodGroup[i] = foodGroup; // sends food group to array
             }
+
             IngredientSteps();
         }
-
+        //************************************************************************************************************************
+        //method for steps with ingredients
         public void IngredientSteps()
         {
             Console.Write("Enter the number of steps: ");//prompting user to enter the number of steps for recipe
@@ -106,6 +143,8 @@ namespace Recipe1
             displayReport();
         }
 
+        //***********************************************************************************************************************************
+        //method for displaying the report with ingredients and steps
         public void displayReport() 
         {
             
@@ -126,15 +165,17 @@ namespace Recipe1
             OptionReport();
         }
 
+        //********************************************************************************************************************************
+        //report displaying optons
         public void OptionReport ()
         {
-            Console.WriteLine("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA\n3)QUIT");//ask user which option they would prefer
+            Console.WriteLine("\n\nWOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA AND RESTART\n3)QUIT");//ask user which option they would prefer
             Option = Console.ReadLine();
             int Option1;
             while (!int.TryParse(Option, out Option1))//if the incorrect number is entered
             {
                 Console.WriteLine("Invalid input. Please enter a valid integer.");
-                Console.Write("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA\n3)QUIT");
+                Console.Write("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA AND RESTART\n3)QUIT");
                 Option = Console.ReadLine();
             }
             if (Option1 != 1 && Option1 != 2 && Option1 != 3)//if an integer is entered besides 1,2,3
@@ -157,6 +198,8 @@ namespace Recipe1
             }
         }
 
+        //***********************************************************************************************************************************
+       // report showing the new scaled results
         public void ScaleReport() 
         {
             Console.Write("Scale quantities by: ");//input the amount you want to scale by
@@ -201,6 +244,8 @@ namespace Recipe1
            
          }
 
+        // method for clearing data in arrays
+        //***********************************************************************************************************************************
         public void ClearData() //clear all arrays and start from begginning
         {
             //clears Arrays
@@ -211,7 +256,7 @@ namespace Recipe1
 
             Input();
         }
-           
+         //************************************************************************************************************************************  
 
 
 
