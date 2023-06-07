@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Recipe1
 {
-    internal class Class1
+    public class Class1
     {
 
        
@@ -249,12 +249,18 @@ namespace Recipe1
             RecipeCaloriesExceeded?.Invoke(recipeName);
         }
 
+        public double CalculateTotalCalories(List<double> ingredientCalories)
+        {
+            double totalCalories = ingredientCalories.Sum();
+            return totalCalories;
+        }
+
         // DisplayReport method
         public void DisplayReport()
         {
             int recipeIndex = prodNames.Count - 1;
 
-            Console.WriteLine($"\n\n\n*****{prodNames[recipeIndex].ToUpper()} RECIPE REPORT*****");
+            Console.WriteLine($"\n*****{prodNames[recipeIndex].ToUpper()} RECIPE REPORT*****");
             Console.WriteLine($"\n\n\n*****{prodNames[recipeIndex].ToUpper()} Ingredients*****");
 
             for (int i = 0; i < names[recipeIndex].Count; i++)
@@ -268,14 +274,28 @@ namespace Recipe1
                 Console.WriteLine($"{i + 1}. {steps[recipeIndex][i]}");
             }
 
-            double totalCalories = calories[recipeIndex].Sum();
-            Console.WriteLine("\n*****Calories*****");
-            Console.WriteLine($"\nTotal Calories: {totalCalories}");
+            // Calculate total calories
+            List<double> ingredientCalories = calories[recipeIndex];
+            double totalCalories = CalculateTotalCalories(ingredientCalories);
 
-            // Check if calories exceed 300 and invoke the event
+            // Display total calories
+            Console.WriteLine($"\n----------------Total Calories: {totalCalories}\n----------------");
+
+            Console.WriteLine("\n\n***SCALABLE CALORIE INTAKE***\"100-300: Good\n300-500: Decent\n500-700: Moderate\n700-900: High\n900-1000: Very high");
+
+
+            // Check if calories exceed 300 and call the event
             if (totalCalories > 300)
             {
+                Console.Beep();
                 OnRecipeCaloriesExceeded(prodNames[recipeIndex]);
+                Console.WriteLine("\n\nA meal with more than 300 calories often has a larger caloric content. This could indicate a" +
+                                  "\n meal that is heavier or more filling. When consuming meals with higher calorie counts, it's crucial to pay attention to portion " +
+                                  "\nsizes and the overall balance of nutrients. It's best to make sure the meal contains" +
+                                  "\n a range of nutrient-rich foods to suit your nutritional needs. A well-rounded and balanced diet" +
+                                  "\n can be maintained by watching portion sizes and including a variety of vegetables, lean proteins, whole grains, and healthy fats.\n\n");
+
+
             }
 
             OptionReport();
@@ -285,47 +305,55 @@ namespace Recipe1
         // Report displaying options
         public void OptionReport()
         {
-            Console.WriteLine("\nWOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) NEW RECIPE\n5) QUIT");
-            string option = Console.ReadLine();
-            int option1;
-            while (!int.TryParse(option, out option1))
+            try
             {
-                Console.WriteLine("Invalid input. Please enter a valid integer.");
-                Console.Write("WOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) NEW RECIPE\n5) QUIT");
-                option = Console.ReadLine();
-            }
+                Console.WriteLine("\nWOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) NEW RECIPE\n5) QUIT");
+                string option = Console.ReadLine();
+                int option1;
+                while (!int.TryParse(option, out option1))
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid integer.");
+                    Console.Write("WOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) NEW RECIPE\n5) QUIT");
+                    option = Console.ReadLine();
+                }
 
-            switch (option1)
-            {
-                case 1:
-                    ScaleReport();
-                    break;
-                case 2:
-                    ClearData();
-                    break;
-                case 3:
-                    if (prodNames.Count == 0)
-                    {
-                        Console.WriteLine("There are no recipes. Please create a new recipe.");
+                switch (option1)
+                {
+                    case 1:
+                        ScaleReport();
+                        break;
+                    case 2:
+                        ClearData();
+                        break;
+                    case 3:
+                        if (prodNames.Count == 0)
+                        {
+                            Console.WriteLine("There are no recipes. Please create a new recipe.");
+                            Input();
+                        }
+                        else
+                        {
+                            ViewRecipes();
+                        }
+                        break;
+                    case 4:
                         Input();
-                    }
-                    else
-                    {
-                        ViewRecipes();
-                    }
-                    break;
-                case 4:
-                    Input();
-                    break;
-                case 5:
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.WriteLine("INVALID INPUT!");
-                    OptionReport();
-                    break;
+                        break;
+                    case 5:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("INVALID INPUT!");
+                        OptionReport();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
+
 
 
         // Report showing the new scaled results
