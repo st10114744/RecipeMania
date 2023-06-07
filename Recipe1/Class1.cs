@@ -1,250 +1,268 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+
 
 namespace Recipe1
 {
     internal class Class1
     {
-        // Declare variables
-        private List<string> prodNames;
-        private List<List<string>> names;
-        private List<List<double>> quantities;
-        private List<List<string>> units;
-        private List<List<double>> calories;
-        private List<List<string>> foodGroups;
-        private List<List<string>> steps;
+        //declare variables
+        string numingred;
+        string prodName;
+        string option;
 
-        // Default constructor
-        public Class1()
+        //get and sets
+        public string NumIngred { get; set; }
+        public string ProdName { get; set; }
+        public string Option { get; set; }
+
+
+        //Declare arrays in class
+        public string[] Name { get; set; }
+        public double[] Quantity { get; set; }
+        public string[] Unit { get; set; }
+        
+        private string[] steps { get; set; }
+
+        private string[] FoodGroup { get; set; }
+        private double[] Calories { get; set; } 
+
+
+
+        //default constructor
+        public Class1() 
         {
-            prodNames = new List<string>();
-            names = new List<List<string>>();
-            quantities = new List<List<double>>();
-            units = new List<List<string>>();
-            calories = new List<List<double>>();
-            foodGroups = new List<List<string>>();
-            steps = new List<List<string>>();
+        
         }
-
-        // Welcome method
-        public void Intro()
+       // ******************************************************************************************************************************
+        //welcome method
+        public void Intro() 
         {
             Console.WriteLine("********WELCOME TO RECIPE MANIA********");
             Input();
         }
 
+        //*******************************************************************************************************************************
+
         public void Input()
         {
-            while (true)
+            Console.WriteLine("ENTER THE NAME OF THE PRODUCT YOU WANTING TO MAKE:");//prompts the user for product name
+            ProdName = Console.ReadLine();
+
+            Console.Write("Number of ingredients: ");//prompts user for number of ingredients
+            NumIngred = Console.ReadLine();
+            int numIngredients;
+            while (!int.TryParse(NumIngred, out numIngredients))//if something else besides integer is entered
             {
-                Console.WriteLine("ENTER THE NAME OF THE PRODUCT YOU WANTING TO MAKE (or 'q' to quit):");
-                string prodName = Console.ReadLine();
-
-                if (prodName.ToLower() == "q")
-                {
-                    Console.WriteLine("Goodbye!");
-                    break;
-                }
-
-                prodNames.Add(prodName);
-
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
                 Console.Write("Number of ingredients: ");
-                string numIngred = Console.ReadLine();
-                int numIngredients;
-                while (!int.TryParse(numIngred, out numIngredients))
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid integer.");
-                    Console.Write("Number of ingredients: ");
-                    numIngred = Console.ReadLine();
-                }
-
-                List<string> ingredientNames = new List<string>();
-                List<double> ingredientQuantities = new List<double>();
-                List<string> ingredientUnits = new List<string>();
-                List<double> ingredientCalories = new List<double>();
-                List<string> ingredientFoodGroups = new List<string>();
-
-                for (int i = 0; i < numIngredients; i++)
-                {
-                    Console.WriteLine($"Enter the details for ingredient #{i + 1}:");
-                    Console.Write("Name: ");
-                    string name = Console.ReadLine();
-                    ingredientNames.Add(name);
-
-                    Console.Write("Quantity: ");
-                    string input = Console.ReadLine();
-                    double quantity;
-                    while (!double.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out quantity))
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
-                        Console.Write("Quantity: ");
-                        input = Console.ReadLine();
-                    }
-                    ingredientQuantities.Add(quantity);
-
-                    Console.Write("Unit of Measurement: ");
-                    string unit = Console.ReadLine();
-                    ingredientUnits.Add(unit);
-
-                    Console.Write("Calories: ");
-                    string caloriesInput = Console.ReadLine();
-                    double calories;
-                    while (!double.TryParse(caloriesInput, NumberStyles.Number, CultureInfo.InvariantCulture, out calories))
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
-                        Console.Write("Calories: ");
-                        caloriesInput = Console.ReadLine();
-                    }
-                    ingredientCalories.Add(calories);
-
-                    Console.Write("Food Group: ");
-                    string foodGroup = Console.ReadLine();
-                    ingredientFoodGroups.Add(foodGroup);
-                }
-
-                names.Add(ingredientNames);
-                quantities.Add(ingredientQuantities);
-                units.Add(ingredientUnits);
-                calories.Add(ingredientCalories);
-                foodGroups.Add(ingredientFoodGroups);
-
-                IngredientSteps();
+                NumIngred = Console.ReadLine();
             }
-        }
 
-        // Method for steps with ingredients
+            // Initialize the arrays here
+            Name = new string[numIngredients];
+            Quantity = new double[numIngredients];
+            Unit = new string[numIngredients];
+            Calories= new double[numIngredients];
+            FoodGroup = new string[numIngredients];
+
+            // Initialize the arrays here
+            Name = new string[numIngredients];
+            Quantity = new double[numIngredients];
+            Unit = new string[numIngredients];
+            Calories = new double[numIngredients];
+            FoodGroup = new string[numIngredients];
+
+            // Ask the user to enter the details for each ingredient
+            for (int i = 0; i < numIngredients; i++) // allows us to loop through each ingredient
+            {
+                Console.WriteLine($"Enter the details for ingredient #{i + 1}:"); // enter details and auto generates ingredient number based on number of ingredients
+                Console.Write("Name: "); // enter ingredient name
+                string name = Console.ReadLine();
+                Name[i] = name; // sends the name to array
+
+                Console.Write("Quantity: "); // quantity of ingredient
+                string input = Console.ReadLine();
+                double quantity;
+
+                while (!double.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out quantity)) // allows there to be a white space before or after input and allows "," or "." as a decimal point.
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid number."); // prompts user to enter again if input is incorrect
+                    Console.Write("Quantity: ");
+                    input = Console.ReadLine();
+                }
+
+                Quantity[i] = quantity; // sends quantity input to array
+
+                Console.Write("Unit of Measurement: "); // input unit of measurements
+                string unit = Console.ReadLine();
+                Unit[i] = unit; // sends unit to array
+
+                Console.Write("Calories: "); // input calories of ingredient
+                string caloriesInput = Console.ReadLine();
+                double calories;
+
+                while (!double.TryParse(caloriesInput, NumberStyles.Number, CultureInfo.InvariantCulture, out calories)) // allows there to be a white space before or after input and allows "," or "." as a decimal point.
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid number."); // prompts user to enter again if input is incorrect
+                    Console.Write("Calories: ");
+                    caloriesInput = Console.ReadLine();
+                }
+
+                Calories[i] = calories; // sends calories input to array
+
+                Console.Write("Food Group: "); // input food group of ingredient
+                string foodGroup = Console.ReadLine();
+                FoodGroup[i] = foodGroup; // sends food group to array
+            }
+
+            IngredientSteps();
+        }
+        //************************************************************************************************************************
+        //method for steps with ingredients
         public void IngredientSteps()
         {
-            Console.Write("Enter the number of steps: ");
+            Console.Write("Enter the number of steps: ");//prompting user to enter the number of steps for recipe
             int numSteps = int.Parse(Console.ReadLine());
 
-            List<string> recipeSteps = new List<string>();
+            steps = new string[numSteps];// initialisng array
 
+            // Prompt the user to enter the description for each step
             for (int i = 0; i < numSteps; i++)
             {
-                Console.Write($"Enter the description for step #{i + 1}: ");
-                string step = Console.ReadLine();
-                recipeSteps.Add(step);
+                Console.Write($"Enter the description for step #{i + 1}: ");//autogenerates step number according to number of steps
+                steps[i] = Console.ReadLine();//sends descriptions to array
             }
-
-            steps.Add(recipeSteps);
-
-            DisplayReport();
+            displayReport();
         }
 
-        // Method for displaying the report with ingredients and steps
-        public void DisplayReport()
+        //***********************************************************************************************************************************
+        //method for displaying the report with ingredients and steps
+        public void displayReport() 
         {
-            int recipeIndex = prodNames.Count - 1;
-            Console.WriteLine($"\n\n\n*****{prodNames[recipeIndex].ToUpper()} INGREDIENTS*****");
+            
+            Console.WriteLine($"\n\n\n*****{ProdName.ToUpper()} INGREDIENTS*****");//Recipe name 
 
-            for (int i = 0; i < names[recipeIndex].Count; i++)
+            //displays ingredients via iterating through for loop
+            for (int i = 0; i < Name.Length; i++)
             {
-                Console.WriteLine($"{names[recipeIndex][i]} : {quantities[recipeIndex][i]} {units[recipeIndex][i]}");
+                Console.WriteLine($"{Name[i]} : {Quantity[i]} {Unit[i]}");//concatinates all details in arrays into one string for each ingredient
             }
 
-            Console.WriteLine("\n*****Steps*****");
-            for (int i = 0; i < steps[recipeIndex].Count; i++)
+            //displays all the neccessary steps after each ingredient
+            Console.WriteLine("\n*****Steps*****");//itterates through for loop displaying the steps
+            for (int i = 0; i < steps.Length; i++)
             {
-                Console.WriteLine($"{i + 1}. {steps[recipeIndex][i]}");
+                Console.WriteLine($"{i + 1}. {steps[i]}");
             }
-
             OptionReport();
         }
 
-        // Report displaying options
-        public void OptionReport()
+        //********************************************************************************************************************************
+        //report displaying optons
+        public void OptionReport ()
         {
-            Console.WriteLine("\n\nWOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA AND RESTART\n3)QUIT");
-            string option = Console.ReadLine();
-            int option1;
-            while (!int.TryParse(option, out option1))
+            Console.WriteLine("\n\nWOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA AND RESTART\n3)QUIT");//ask user which option they would prefer
+            Option = Console.ReadLine();
+            int Option1;
+            while (!int.TryParse(Option, out Option1))//if the incorrect number is entered
             {
                 Console.WriteLine("Invalid input. Please enter a valid integer.");
                 Console.Write("WOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA AND RESTART\n3)QUIT");
-                option = Console.ReadLine();
+                Option = Console.ReadLine();
             }
-
-            if (option1 != 1 && option1 != 2 && option1 != 3)
+            if (Option1 != 1 && Option1 != 2 && Option1 != 3)//if an integer is entered besides 1,2,3
             {
-                Console.WriteLine("INVALID INPUT!");
+                Console.WriteLine(" INVALID INPUT!");
                 OptionReport();
             }
 
-            if (option1 == 1)
+            if (Option1==1) 
             {
-                ScaleReport();
+                ScaleReport();//goes to scale data report
             }
-            else if (option1 == 2)
+           else if (Option1 == 2) 
             {
-                ClearData();
+                ClearData();//goes to clear data method
             }
-            else if (option1 == 3)
+            else if(Option1 == 3)
             {
-                Environment.Exit(0);
+                System.Environment.Exit(0);//exits program
             }
         }
 
-        // Report showing the new scaled results
-        public void ScaleReport()
+        //***********************************************************************************************************************************
+       // report showing the new scaled results
+        public void ScaleReport() 
         {
-            int recipeIndex = prodNames.Count - 1;
-
-            Console.Write("Scale quantities by: ");
+            Console.Write("Scale quantities by: ");//input the amount you want to scale by
             string scaleInput = Console.ReadLine();
             double scale;
-            while (!double.TryParse(scaleInput, out scale))
+            while (!double.TryParse(scaleInput, out scale))//invalid integer
             {
-                Console.WriteLine("Invalid input. Please enter a valid number.");
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
                 Console.Write("Scale quantities by: ");
                 scaleInput = Console.ReadLine();
             }
-
             Console.WriteLine("\n\n*****SCALED REPORT*****");
-            for (int i = 0; i < quantities[recipeIndex].Count; i++)
+            for (int i = 0; i < Quantity.Length; i++)//itterates through quantities and scales them according to the number
             {
-                double scaledQuantity = quantities[recipeIndex][i] * scale;
-                Console.WriteLine($"{names[recipeIndex][i]} : {scaledQuantity} {units[recipeIndex][i]}");
+                double scaledQuantity = Quantity[i] * scale;
+                Console.WriteLine($"{Name[i]} : {scaledQuantity} {Unit[i]}");
             }
-
-            Console.WriteLine("Do you wish to go back to original values?\n1)yes\n2)no");
-            string option = Console.ReadLine();
-            int option1;
-            while (!int.TryParse(option, out option1))
+            
+            Console.WriteLine(" Do you wish to go back to original values?\n1)yes\n2)no");
+            Option = Console.ReadLine();
+            int Option1;
+            while (!int.TryParse(Option, out Option1))//if the incorrect number is entered
             {
                 Console.WriteLine("Invalid input. Please enter a valid integer.");
                 Console.Write("Do you wish to go back to original values?\n1)yes\n2)no");
-                option = Console.ReadLine();
+                Option = Console.ReadLine();
+            }
+            if (Option1 != 1 && Option1 != 2 ||Option1>2)//if an integer is entered besides 1,2 or greater than 2
+            {
+                Console.WriteLine(" INVALID INPUT!");
+               OptionReport();//goes back to Options
             }
 
-            if (option1 != 1 && option1 != 2)
+            if (Option1 == 1)
             {
-                Console.WriteLine("INVALID INPUT!");
-                OptionReport();
+                displayReport();//goes back to original report
             }
+            else if (Option1 == 2)
+            {
+                System.Environment.Exit(0);//exits
+            }
+           
+         }
 
-            if (option1 == 1)
-            {
-                DisplayReport();
-            }
-            else if (option1 == 2)
-            {
-                Environment.Exit(0);
-            }
-        }
-
-        // Method for clearing data in collections and restarting
-        public void ClearData()
+        // method for clearing data in arrays
+        //***********************************************************************************************************************************
+        public void ClearData() //clear all arrays and start from begginning
         {
-            prodNames.RemoveAt(prodNames.Count - 1);
-            names.RemoveAt(names.Count - 1);
-            quantities.RemoveAt(quantities.Count - 1);
-            units.RemoveAt(units.Count - 1);
-            steps.RemoveAt(steps.Count - 1);
+            //clears Arrays
+            Array.Clear(Name, 0, Name.Length);
+            Array.Clear(Unit, 0, Unit.Length);
+            Array.Clear(Quantity, 0, Quantity.Length);
+            Array.Clear(steps, 0, steps.Length);
 
             Input();
         }
+         //************************************************************************************************************************************  
+
+
+
+
+
+
+
     }
 }
