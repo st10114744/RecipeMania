@@ -74,7 +74,6 @@ namespace Recipe1
                 }
             }
         }
-
         public void Input()
         {
             try
@@ -126,6 +125,16 @@ namespace Recipe1
 
                     Console.Write("Unit of Measurement: ");
                     string unit = Console.ReadLine();
+
+                    bool containsNumbers = unit.Any(char.IsDigit);
+                    while (containsNumbers)
+                    {
+                        Console.WriteLine("Invalid input. Unit of measurement should not contain numbers.");
+                        Console.Write("Unit of Measurement: ");
+                        unit = Console.ReadLine();
+                        containsNumbers = unit.Any(char.IsDigit);
+                    }
+
                     ingredientUnits.Add(unit);
 
                     Console.Write("Calories: ");
@@ -139,8 +148,54 @@ namespace Recipe1
                     }
                     ingredientCalories.Add(calories);
 
-                    Console.Write("Food Group: ");
-                    string foodGroup = Console.ReadLine();
+                    Console.WriteLine("Food Group Options:");
+                    Console.WriteLine("1. Starchy foods");
+                    Console.WriteLine("2. Vegetables and fruits");
+                    Console.WriteLine("3. Dry beans, peas, lentils, and soya");
+                    Console.WriteLine("4. Chicken, fish, meat, and eggs");
+                    Console.WriteLine("5. Milk and dairy products");
+                    Console.WriteLine("6. Fats and oil");
+                    Console.WriteLine("7. Water");
+
+                    Console.Write("Food Group (enter the corresponding number): ");
+                    string foodGroupInput = Console.ReadLine();
+                    int foodGroupOption;
+                    while (!int.TryParse(foodGroupInput, out foodGroupOption) || foodGroupOption < 1 || foodGroupOption > 7)
+                    {
+                        Console.WriteLine("Invalid input. Please enter a valid number.");
+                        Console.Write("Food Group (enter the corresponding number): ");
+                        foodGroupInput = Console.ReadLine();
+                    }
+
+                    string foodGroup;
+                    switch (foodGroupOption)
+                    {
+                        case 1:
+                            foodGroup = "Starchy foods";
+                            break;
+                        case 2:
+                            foodGroup = "Vegetables and fruits";
+                            break;
+                        case 3:
+                            foodGroup = "Dry beans, peas, lentils, and soya";
+                            break;
+                        case 4:
+                            foodGroup = "Chicken, fish, meat, and eggs";
+                            break;
+                        case 5:
+                            foodGroup = "Milk and dairy products";
+                            break;
+                        case 6:
+                            foodGroup = "Fats and oil";
+                            break;
+                        case 7:
+                            foodGroup = "Water";
+                            break;
+                        default:
+                            foodGroup = "";
+                            break;
+                    }
+
                     ingredientFoodGroups.Add(foodGroup);
                 }
 
@@ -159,6 +214,8 @@ namespace Recipe1
                 Input();
             }
         }
+
+
 
 
         // Method for steps with ingredients
@@ -311,10 +368,12 @@ namespace Recipe1
         public void ViewRecipes()
         {
             Console.WriteLine("\n*****RECIPE LIST*****");
-            for (int i = 0; i < prodNames.Count; i++)
+            List<string> sortedProdNames = prodNames.OrderBy(name => name).ToList();
+            for (int i = 0; i < sortedProdNames.Count; i++)
             {
-                Console.WriteLine($"{i + 1}) {prodNames[i]}");
+                Console.WriteLine($"{i + 1}) {sortedProdNames[i]}");
             }
+
 
             Console.Write("Enter the recipe number to view details (or 'q' to quit): ");
             string input = Console.ReadLine();
