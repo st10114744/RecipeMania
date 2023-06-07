@@ -32,20 +32,60 @@ namespace Recipe1
         public void Intro()
         {
             Console.WriteLine("********WELCOME TO RECIPE MANIA********");
-            Input();
+            Menu();
+        }
+
+        // Display menu options
+        public void Menu()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nMENU:");
+                Console.WriteLine("1) New Recipe");
+                Console.WriteLine("2) View Recipes");
+                Console.WriteLine("3) Quit");
+
+                Console.Write("Please enter your choice: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        Input();
+                        break;
+                    case "2":
+                        if (prodNames.Count == 0)
+                        {
+                            Console.WriteLine("There are no recipes. Please create a new recipe.");
+                            Input();
+                        }
+                        else
+                        {
+                            ViewRecipes();
+                        }
+                        break;
+                    case "3":
+                        Console.WriteLine("Goodbye!");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+            }
         }
 
         public void Input()
         {
-            while (true)
+            try
             {
-                Console.WriteLine("ENTER THE NAME OF THE PRODUCT YOU WANTING TO MAKE (or 'q' to quit):");
+                Console.WriteLine("\nENTER THE NAME OF THE PRODUCT YOU WANT TO MAKE (or 'q' to quit):");
                 string prodName = Console.ReadLine();
 
                 if (prodName.ToLower() == "q")
                 {
                     Console.WriteLine("Goodbye!");
-                    break;
+                    Environment.Exit(0);
                 }
 
                 prodNames.Add(prodName);
@@ -73,20 +113,14 @@ namespace Recipe1
                     string name = Console.ReadLine();
                     ingredientNames.Add(name);
 
+                    Console.Write("Quantity: ");
+                    string input = Console.ReadLine();
                     double quantity;
-                    while (true)
+                    while (!double.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out quantity))
                     {
+                        Console.WriteLine("Invalid input. Please enter a valid number.");
                         Console.Write("Quantity: ");
-                        string input = Console.ReadLine();
-                        try
-                        {
-                            quantity = double.Parse(input, NumberStyles.Number, CultureInfo.InvariantCulture);
-                            break;
-                        }
-                        catch (FormatException)
-                        {
-                            Console.WriteLine("Invalid input. Please enter a valid number.");
-                        }
+                        input = Console.ReadLine();
                     }
                     ingredientQuantities.Add(quantity);
 
@@ -94,20 +128,14 @@ namespace Recipe1
                     string unit = Console.ReadLine();
                     ingredientUnits.Add(unit);
 
+                    Console.Write("Calories: ");
+                    string caloriesInput = Console.ReadLine();
                     double calories;
-                    while (true)
+                    while (!double.TryParse(caloriesInput, NumberStyles.Number, CultureInfo.InvariantCulture, out calories))
                     {
+                        Console.WriteLine("Invalid input. Please enter a valid number.");
                         Console.Write("Calories: ");
-                        string caloriesInput = Console.ReadLine();
-                        try
-                        {
-                            calories = double.Parse(caloriesInput, NumberStyles.Number, CultureInfo.InvariantCulture);
-                            break;
-                        }
-                        catch (FormatException)
-                        {
-                            Console.WriteLine("Invalid input. Please enter a valid number.");
-                        }
+                        caloriesInput = Console.ReadLine();
                     }
                     ingredientCalories.Add(calories);
 
@@ -124,26 +152,20 @@ namespace Recipe1
 
                 IngredientSteps();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while entering the recipe details:");
+                Console.WriteLine(ex.Message);
+                Input();
+            }
         }
+
 
         // Method for steps with ingredients
         public void IngredientSteps()
         {
-            int numSteps;
-            while (true)
-            {
-                Console.Write("Enter the number of steps: ");
-                string numStepsInput = Console.ReadLine();
-                try
-                {
-                    numSteps = int.Parse(numStepsInput);
-                    break;
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid number.");
-                }
-            }
+            Console.Write("Enter the number of steps: ");
+            int numSteps = int.Parse(Console.ReadLine());
 
             List<string> recipeSteps = new List<string>();
 
@@ -179,39 +201,46 @@ namespace Recipe1
             OptionReport();
         }
 
+        
         // Report displaying options
         public void OptionReport()
         {
+            Console.WriteLine("\nWOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) QUIT");
+            string option = Console.ReadLine();
             int option1;
-            while (true)
+            while (!int.TryParse(option, out option1))
             {
-                Console.WriteLine("\n\nWOULD YOU LIKE TO?\n1)SCALE RECIPE\n2)CLEAR DATA AND RESTART\n3)QUIT");
-                string option = Console.ReadLine();
-                try
-                {
-                    option1 = int.Parse(option);
-                    if (option1 == 1 || option1 == 2 || option1 == 3)
-                        break;
-                    else
-                        Console.WriteLine("INVALID INPUT!");
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid integer.");
-                }
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
+                Console.Write("WOULD YOU LIKE TO?\n1) SCALE RECIPE\n2) CLEAR DATA AND RESTART\n3) VIEW RECIPES\n4) QUIT");
+                option = Console.ReadLine();
             }
 
-            if (option1 == 1)
+            switch (option1)
             {
-                ScaleReport();
-            }
-            else if (option1 == 2)
-            {
-                ClearData();
-            }
-            else if (option1 == 3)
-            {
-                Environment.Exit(0);
+                case 1:
+                    ScaleReport();
+                    break;
+                case 2:
+                    ClearData();
+                    break;
+                case 3:
+                    if (prodNames.Count == 0)
+                    {
+                        Console.WriteLine("There are no recipes. Please create a new recipe.");
+                        Input();
+                    }
+                    else
+                    {
+                        ViewRecipes();
+                    }
+                    break;
+                case 4:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("INVALID INPUT!");
+                    OptionReport();
+                    break;
             }
         }
 
@@ -220,20 +249,14 @@ namespace Recipe1
         {
             int recipeIndex = prodNames.Count - 1;
 
+            Console.Write("Scale quantities by: ");
+            string scaleInput = Console.ReadLine();
             double scale;
-            while (true)
+            while (!double.TryParse(scaleInput, out scale))
             {
+                Console.WriteLine("Invalid input. Please enter a valid number.");
                 Console.Write("Scale quantities by: ");
-                string scaleInput = Console.ReadLine();
-                try
-                {
-                    scale = double.Parse(scaleInput);
-                    break;
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid number.");
-                }
+                scaleInput = Console.ReadLine();
             }
 
             Console.WriteLine("\n\n*****SCALED REPORT*****");
@@ -243,23 +266,14 @@ namespace Recipe1
                 Console.WriteLine($"{names[recipeIndex][i]} : {scaledQuantity} {units[recipeIndex][i]}");
             }
 
+            Console.WriteLine("Do you wish to go back to the original values?\n1) Yes\n2) No");
+            string option = Console.ReadLine();
             int option1;
-            while (true)
+            while (!int.TryParse(option, out option1))
             {
-                Console.WriteLine("Do you wish to go back to original values?\n1)yes\n2)no");
-                string option = Console.ReadLine();
-                try
-                {
-                    option1 = int.Parse(option);
-                    if (option1 == 1 || option1 == 2)
-                        break;
-                    else
-                        Console.WriteLine("INVALID INPUT!");
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid integer.");
-                }
+                Console.WriteLine("Invalid input. Please enter a valid number.");
+                Console.Write("Do you wish to go back to the original values?\n1) Yes\n2) No");
+                option = Console.ReadLine();
             }
 
             if (option1 == 1)
@@ -268,20 +282,83 @@ namespace Recipe1
             }
             else if (option1 == 2)
             {
-                Environment.Exit(0);
+                OptionReport();
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice. Going back to the original values.");
+                DisplayReport();
             }
         }
 
-        // Method for clearing data in collections and restarting
-        public void ClearData()
-        {
-            prodNames.RemoveAt(prodNames.Count - 1);
-            names.RemoveAt(names.Count - 1);
-            quantities.RemoveAt(quantities.Count - 1);
-            units.RemoveAt(units.Count - 1);
-            steps.RemoveAt(steps.Count - 1);
+           // Method for clearing data of the current recipe
+            public void ClearData()
+            {
+                int recipeIndex = prodNames.Count - 1;
 
-            Input();
+                prodNames.RemoveAt(recipeIndex);
+                names.RemoveAt(recipeIndex);
+                quantities.RemoveAt(recipeIndex);
+                units.RemoveAt(recipeIndex);
+                steps.RemoveAt(recipeIndex);
+
+                Console.WriteLine("Recipe data cleared successfully.");
+                Input();
+            }
+        
+
+        // View all the recipes
+        public void ViewRecipes()
+        {
+            Console.WriteLine("\n*****RECIPE LIST*****");
+            for (int i = 0; i < prodNames.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}) {prodNames[i]}");
+            }
+
+            Console.Write("Enter the recipe number to view details (or 'q' to quit): ");
+            string input = Console.ReadLine();
+
+            if (input.ToLower() == "q")
+            {
+                Console.WriteLine("Going back to the menu...");
+                Menu();
+            }
+            else
+            {
+                int recipeNumber;
+                while (!int.TryParse(input, out recipeNumber) || recipeNumber < 1 || recipeNumber > prodNames.Count)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid recipe number.");
+                    Console.Write("Enter the recipe number to view details (or 'q' to quit): ");
+                    input = Console.ReadLine();
+
+                    if (input.ToLower() == "q")
+                    {
+                        Console.WriteLine("Going back to the menu...");
+                        Menu();
+                    }
+                }
+
+                int recipeIndex = recipeNumber - 1;
+
+                Console.WriteLine($"\n\n\n*****{prodNames[recipeIndex].ToUpper()} INGREDIENTS*****");
+                for (int i = 0; i < names[recipeIndex].Count; i++)
+                {
+                    Console.WriteLine($"{names[recipeIndex][i]} : {quantities[recipeIndex][i]} {units[recipeIndex][i]}");
+                }
+
+                Console.WriteLine("\n*****Steps*****");
+                for (int i = 0; i < steps[recipeIndex].Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {steps[recipeIndex][i]}");
+                }
+
+                OptionReport();
+            }
         }
+
+        
+        
     }
 }
